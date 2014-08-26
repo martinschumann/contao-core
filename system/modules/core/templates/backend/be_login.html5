@@ -12,6 +12,7 @@
     $objCombiner = new Combiner();
     $objCombiner->add('assets/mootools/stylect/css/stylect.css');
     $objCombiner->add('system/themes/'. $this->theme .'/basic.css');
+    $objCombiner->add('system/themes/'. $this->theme .'/icons.css');
     $objCombiner->add('system/themes/'. $this->theme .'/login.css');
     echo $objCombiner->getCombinedFile();
   ?>">
@@ -45,7 +46,7 @@
   <div id="container">
 
     <div id="main">
-      <h2><?php echo $this->headline; ?></h2>
+      <h2 class="icon icon-big icon-logo"><?php echo $this->headline; ?></h2>
       <form action="<?php echo $this->action; ?>" class="tl_login_form" method="post">
         <div class="formbody">
           <input type="hidden" name="FORM_SUBMIT" value="tl_login">
@@ -85,7 +86,7 @@
         <p>Contao Open Source CMS :: Copyright ©2005-<?php echo date('Y'); ?> by Leo Feyer :: Extensions are copyright of their respective owners :: Visit <a href="https://contao.org" target="_blank">contao.org</a> for more information :: Obstructing the appearance of this notice is prohibited by law!</p>
 	    <p>Contao is distributed in the hope that it will be useful but WITHOUT ANY WARRANTY. Without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details. Contao is free software. You can redistribute it and/or modify it under the terms of the GNU/LGPL as published by the Free Software Foundation.</p>
 	  </div>
-      <p id="go_to_frontend"><a href="<?php echo $this->frontendFile; ?>" class="footer_preview" title="<?php echo $this->feLink; ?>"><?php echo $this->feLink; ?></a></p>
+      <p id="go_to_frontend"><a href="<?php echo $this->frontendFile; ?>" class="footer_preview icon icon-gotofe" title="<?php echo $this->feLink; ?>"><?php echo $this->feLink; ?></a></p>
     </div>
   </div>
 

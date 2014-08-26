@@ -1,0 +1,36 @@
+/**
+ * Contao Open Source CMS
+ *
+ * Copyright (c) 2005-2014 Leo Feyer
+ *
+ * @package Core
+ * @link    https://contao.org
+ * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ */
+
+.icon:before {
+	content:"";
+	width:16px;
+	height:16px;
+	display:inline-block;
+	vertical-align:top;
+	position:relative;
+	top:-1px;
+	margin-right:4px;
+	background:url("images/sprite.png") 0 0 no-repeat;
+}
+
+.icon-big:before {
+	width:32px;
+	height:32px;
+	margin-right:8px;
+}
+
+.icon-logo:before {
+	top:-4px;
+	background-position:-16px 0;
+}
+
+.icon-gotofe:before {
+	background-position:2px 0;
+}

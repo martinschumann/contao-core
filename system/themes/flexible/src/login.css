@@ -50,22 +50,18 @@ body {
 
 /* Headlines */
 #container h2 {
-	margin:18px;
-	padding:6px 0 8px 40px;
-	background:url("images/logo.gif") no-repeat left center;
+	margin:24px 18px 0;
 	font-size:14px;
 	color:#8ab858;
 }
 
 /* Front end link */
 #go_to_frontend {
-	margin:0 18px 12px 0;
+	margin:0 18px 9px 0;
 	padding:0;
 	text-align:right;
 }
 #go_to_frontend a {
-	padding:2px 0 3px 20px;
-	background:url("images/login.gif") no-repeat left center;
 	color:#aaa;
 }
 
@@ -113,7 +109,7 @@ body {
 /* Login form */
 .tl_login_form {
 	width:350px;
-	margin:18px auto 24px;
+	margin:12px auto 24px;
 }
 .tl_login_form .formbody {
 	padding-top:6px;
