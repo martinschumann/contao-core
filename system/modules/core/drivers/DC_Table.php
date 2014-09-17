@@ -856,7 +856,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		// Copy the values if the record contains data
 		if ($objRow->numRows)
 		{
-			$this->objActiveRecord = $objRow;
+			$this->objActiveRecord = (object) $objRow->row();
 
 			foreach ($objRow->row() as $k=>$v)
 			{
@@ -1087,7 +1087,9 @@ class DC_Table extends \DataContainer implements \listable, \editable
 						continue;
 					}
 
-					$this->objActiveRecord = $objCTable;
+					// Overwrite the ID
+					$this->objActiveRecord = (object) $objCTable->row();
+					$this->objActiveRecord->id = $insertID;
 
 					foreach ($objCTable->row() as $kk=>$vv)
 					{
