@@ -856,7 +856,9 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		// Copy the values if the record contains data
 		if ($objRow->numRows)
 		{
-			foreach ($objRow->fetchAssoc() as $k=>$v)
+			$this->objActiveRecord = $objRow;
+
+			foreach ($objRow->row() as $k=>$v)
 			{
 				if (in_array($k, array_keys($GLOBALS['TL_DCA'][$this->strTable]['fields'])))
 				{
@@ -884,8 +886,28 @@ class DC_Table extends \DataContainer implements \listable, \editable
 						}
 					}
 
+					// Trigger the save_callback
+					if (is_array($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['save_callback']))
+					{
+						foreach ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['save_callback'] as $callback)
+						{
+							if (is_array($callback))
+							{
+								$this->import($callback[0]);
+								$v = $this->$callback[0]->$callback[1]($v, $this);
+							}
+							elseif (is_callable($callback))
+							{
+								$v = $callback($v, $this);
+							}
+						}
+					}
+
 					// Set fields (except password fields)
 					$this->set[$k] = ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['inputType'] == 'password' ? '' : $v);
+
+					// Adjust the active record (required in the save_callback)
+					$this->objActiveRecord->$k = $this->set[$k];
 				}
 			}
 
@@ -1057,15 +1079,17 @@ class DC_Table extends \DataContainer implements \listable, \editable
 												->execute($id);
 				}
 
-				foreach ($objCTable->fetchAllAssoc() as $row)
+				while ($objCTable->next())
 				{
 					// Exclude the duplicated record itself
-					if ($v == $table && $row['id'] == $parentId)
+					if ($v == $table && $objCTable->id == $parentId)
 					{
 						continue;
 					}
 
-					foreach ($row as $kk=>$vv)
+					$this->objActiveRecord = $objCTable;
+
+					foreach ($objCTable->row() as $kk=>$vv)
 					{
 						if ($kk == 'id')
 						{
@@ -1090,11 +1114,31 @@ class DC_Table extends \DataContainer implements \listable, \editable
 							}
 						}
 
-						$copy[$v][$row['id']][$kk] = $vv;
+						// Trigger the save_callback
+						if (is_array($GLOBALS['TL_DCA'][$v]['fields'][$kk]['save_callback']))
+						{
+							foreach ($GLOBALS['TL_DCA'][$v]['fields'][$kk]['save_callback'] as $callback)
+							{
+								if (is_array($callback))
+								{
+									$this->import($callback[0]);
+									$vv = $this->$callback[0]->$callback[1]($vv, $this);
+								}
+								elseif (is_callable($callback))
+								{
+									$vv = $callback($vv, $this);
+								}
+							}
+						}
+
+						$copy[$v][$objCTable->id][$kk] = $vv;
+
+						// Adjust the active record (required in the save_callback)
+						$this->objActiveRecord->$kk = $vv;
 					}
 
-					$copy[$v][$row['id']]['pid'] = $insertID;
-					$copy[$v][$row['id']]['tstamp'] = $time;
+					$copy[$v][$objCTable->id]['pid'] = $insertID;
+					$copy[$v][$objCTable->id]['tstamp'] = $time;
 				}
 			}
 		}
