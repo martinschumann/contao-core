@@ -124,6 +124,25 @@ class Statement extends \Database\Statement
 
 
 	/**
+	 * Get the duration of the latest query
+	 *
+	 * @return float The duration in seconds
+	 */
+	protected function get_duration()
+	{
+		$return = 0;
+		$objProfile = $this->resConnection->query('SHOW PROFILE');
+
+		while (($objRow = $objProfile->fetch_object()) !== null)
+		{
+			$return += $objRow->Duration;
+		}
+
+		return $return;
+	}
+
+
+	/**
 	 * Create a Database\Result object
 	 *
 	 * @param resource $resResult The database result

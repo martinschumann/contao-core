@@ -386,6 +386,9 @@ abstract class Statement
 		}
 		else
 		{
+			// Call getDuration() before explain()
+			$arrData['duration'] = $this->getDuration();
+
 			if (($arrExplain = $this->explain()) != false)
 			{
 				$arrData['explain'] = $arrExplain;
@@ -396,6 +399,17 @@ abstract class Statement
 		}
 
 		$GLOBALS['TL_DEBUG']['database_queries'][] = $arrData;
+	}
+
+
+	/**
+	 * Get the duration of the latest query
+	 *
+	 * @return float The duration in seconds
+	 */
+	public function getDuration()
+	{
+		return $this->get_duration();
 	}
 
 
@@ -469,6 +483,14 @@ abstract class Statement
 	 * @return integer The last insert ID
 	 */
 	abstract protected function insert_id();
+
+
+	/**
+	 * Get the duration of the latest query
+	 *
+	 * @return float The duration in seconds
+	 */
+	abstract protected function get_duration();
 
 
 	/**

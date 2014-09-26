@@ -55,6 +55,11 @@ class Mysqli extends \Database
 		}
 
 		$this->resConnection->set_charset($this->arrConfig['dbCharset']);
+
+		if (\Config::get('debugMode'))
+		{
+			$this->resConnection->query("SET profiling=1");
+		}
 	}
 
 
