@@ -645,11 +645,12 @@ abstract class System
 	/**
 	 * Read the contents of a PHP file, stripping the opening and closing PHP tags
 	 *
-	 * @param string $strName The name of the PHP file
+	 * @param string  $strName         The name of the PHP file
+	 * @param boolean $blnAddNamespace Wrap the content into a namespace declaration
 	 *
 	 * @return string The PHP code without the PHP tags
 	 */
-	protected static function readPhpFileWithoutTags($strName)
+	protected static function readPhpFileWithoutTags($strName, $blnAddNamespace=false)
 	{
 		$strCode = rtrim(file_get_contents(TL_ROOT . '/' . $strName));
 
@@ -671,7 +672,19 @@ abstract class System
 			$strCode = substr($strCode, 0, -2);
 		}
 
-		return rtrim($strCode);
+		if ($blnAddNamespace)
+		{
+			$arrMatches = array();
+
+			if (preg_match('/^namespace ([A-Za-z0-9_\\\\]+);/m', $strCode, $arrMatches))
+			{
+				return sprintf("\nnamespace %s {%s\n\n}", $arrMatches[1], rtrim(preg_replace('/(\n|^)namespace [A-Za-z0-9_\\\\]+;\n?/m', '', $strCode)));
+			}
+
+			return sprintf("\nnamespace {%s\n\n}", rtrim($strCode));
+		}
+
+		return rtrim($strCode)."\n";
 	}
 
 

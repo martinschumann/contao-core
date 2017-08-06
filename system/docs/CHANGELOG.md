@@ -1,6 +1,94 @@
 Contao Open Source CMS changelog
 ================================
 
+Version 3.5.28 (2017-07-12)
+---------------------------
+
+### Fixed
+Prevent arbitrary PHP file inclusions in the back end (see CVE-2017-10993).
+
+### Fixed
+Improve the accessibility of the CAPTCHA widget (see #8709).
+
+### Fixed
+Fixed the iOS scrolling bug in the simple modal script (see #8708).
+
+### Fixed
+Correctly cache the unique keys in the SQL cache (see #8712).
+
+
+Version 3.5.27 (2017-04-25)
+---------------------------
+
+### Fixed
+Revert the Punycode library changes (see #8693).
+
+
+Version 3.5.26 (2017-04-20)
+---------------------------
+
+### Fixed
+Prevent endless loops in the book navigation module (see #8665).
+
+### Fixed
+Limit the maximum size of dimensionless SVGs in the back end (see #8684).
+
+### Fixed
+Correctly handle custom namespaces when combining DCA files (see #8682).
+
+### Fixed
+Also check the X-Forwarded-Proto header when determining HTTPS (see #8691).
+
+### Fixed
+Correctly support 64 character template names everywhere (see #6819).
+
+### Updated
+Updated the Punycode library to version 2 (see #8693).
+
+### Fixed
+Correctly use the en dash in the calendar modules (see #8690).
+
+### Fixed
+Remove the UTF-8 BOM when combining files (see #8689).
+
+### Fixed
+Do not add the CORS headers in the install tool (see #8681).
+
+### Fixed
+Correctly move folders with an "@" in their name (see #8674).
+
+### Fixed
+Correctly redirect to the last page visited upon login (see #8632).
+
+### Fixed
+Back port the e-mail extraction improvements (see #8679).
+
+
+Version 3.5.25 (2017-03-20)
+---------------------------
+
+### Fixed
+Only show error messages to authenticated users in the install tool (see #8666).
+
+### Fixed
+Always show the modal windows in full height (see #8631). 
+
+### Fixed
+Support cross domain requests when rebuilding the search index (see #8597).
+
+### Fixed
+Correctly store numbers with leading zero in the Config class (see #4035).
+
+### Fixed
+Delete an old search entry if the new URL is more canonical (see #8647).
+
+### Fixed
+Also make Folder::$dirname an absolute path again (see #8325).
+
+### Fixed
+Support using namespaces and use statements in DCA/config files (see #8635).
+
+
 Version 3.5.24 (2017-01-19)
 ---------------------------
 

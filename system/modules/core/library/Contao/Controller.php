@@ -996,26 +996,7 @@ abstract class Controller extends \System
 	 */
 	public static function reload()
 	{
-		if (headers_sent())
-		{
-			exit;
-		}
-
-		$strLocation = \Environment::get('uri');
-
-		// Ajax request
-		if (\Environment::get('isAjaxRequest'))
-		{
-			header('HTTP/1.1 204 No Content');
-			header('X-Ajax-Location: ' . $strLocation);
-		}
-		else
-		{
-			header('HTTP/1.1 303 See Other');
-			header('Location: ' . $strLocation);
-		}
-
-		exit;
+		static::redirect(\Environment::get('uri'));
 	}
 
 
@@ -1071,7 +1052,47 @@ abstract class Controller extends \System
 			header('Location: ' . $strLocation);
 		}
 
+		static::setCorsHeaders();
+
 		exit;
+	}
+
+
+	/**
+	 * Send the correct HTTP headers when rebuilding the search index in the back end
+	 */
+	public static function setCorsHeaders()
+	{
+		if (TL_SCRIPT == 'contao/install.php')
+		{
+			return;
+		}
+
+		$strOrigin = \Environment::get('httpOrigin');
+
+		// Not a CORS request
+		if (!$strOrigin)
+		{
+			return;
+		}
+
+		$arrAllowedMethods = array('GET', 'HEAD', 'OPTIONS');
+
+		// Protect and only allow requests from own known hosts and methods
+		if (in_array(\Environment::get('requestMethod'), $arrAllowedMethods))
+		{
+			$blnCheck = \Database::getInstance()
+				->prepare('SELECT id FROM tl_page WHERE type=? AND dns=?')
+				->execute('root', preg_replace('@^https?://@', '', $strOrigin))
+			;
+
+			if ($blnCheck->numRows)
+			{
+				header('Access-Control-Allow-Headers: X-Requested-With');
+				header('Access-Control-Allow-Methods: ' . implode(', ', $arrAllowedMethods));
+				header('Access-Control-Allow-Origin: ' . $strOrigin);
+			}
+		}
 	}
 
 
@@ -1513,10 +1534,10 @@ abstract class Controller extends \System
 				}
 			}
 
-			if ($size[0] > $intMaxWidth || (!$size[0] && !$size[1] && $imgSize[0] > $intMaxWidth))
+			if ($size[0] > $intMaxWidth || (!$size[0] && !$size[1] && (!$imgSize[0] || $imgSize[0] > $intMaxWidth)))
 			{
 				// See #2268 (thanks to Thyon)
-				$ratio = ($size[0] && $size[1]) ? $size[1] / $size[0] : $imgSize[1] / $imgSize[0];
+				$ratio = ($size[0] && $size[1]) ? $size[1] / $size[0] : (($imgSize[0] && $imgSize[1]) ? $imgSize[1] / $imgSize[0] : 0);
 
 				$size[0] = $intMaxWidth;
 				$size[1] = floor($intMaxWidth * $ratio);
@@ -1907,8 +1928,6 @@ abstract class Controller extends \System
 	 * Remove old XML files from the share directory
 	 *
 	 * @param boolean $blnReturn If true, only return the finds and don't delete
-	 *
-	 * @return array An array of old XML files
 	 *
 	 * @deprecated Use Automator::purgeXmlFiles() instead
 	 */

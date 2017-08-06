@@ -486,7 +486,7 @@ class Automator extends \System
 	{
 		// Generate the class/template laoder cache file
 		$objCacheFile = new \File('system/cache/config/autoload.php', true);
-		$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
+		$objCacheFile->write("<?php\n");
 
 		foreach (\ModuleLoader::getActive() as $strModule)
 		{
@@ -494,7 +494,7 @@ class Automator extends \System
 
 			if (file_exists(TL_ROOT . '/' . $strFile))
 			{
-				$objCacheFile->append(static::readPhpFileWithoutTags($strFile));
+				$objCacheFile->append(static::readPhpFileWithoutTags($strFile, true));
 			}
 		}
 
@@ -513,7 +513,7 @@ class Automator extends \System
 
 		// Generate the config cache file
 		$objCacheFile = new \File('system/cache/config/config.php', true);
-		$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
+		$objCacheFile->write("<?php\n");
 
 		foreach (\ModuleLoader::getActive() as $strModule)
 		{
@@ -521,7 +521,7 @@ class Automator extends \System
 
 			if (file_exists(TL_ROOT . '/' . $strFile))
 			{
-				$objCacheFile->append(static::readPhpFileWithoutTags($strFile));
+				$objCacheFile->append(static::readPhpFileWithoutTags($strFile, true));
 			}
 		}
 
@@ -590,7 +590,7 @@ class Automator extends \System
 		{
 			// Generate the cache file
 			$objCacheFile = new \File('system/cache/dca/' . $strName . '.php', true);
-			$objCacheFile->write('<?php '); // add one space to prevent the "unexpected $end" error
+			$objCacheFile->write("<?php\n");
 
 			// Parse all active modules
 			foreach (\ModuleLoader::getActive() as $strModule)
@@ -599,7 +599,7 @@ class Automator extends \System
 
 				if (file_exists(TL_ROOT . '/' . $strFile))
 				{
-					$objCacheFile->append(static::readPhpFileWithoutTags($strFile));
+					$objCacheFile->append(static::readPhpFileWithoutTags($strFile, true));
 				}
 			}
 
@@ -762,6 +762,7 @@ class Automator extends \System
 			$objFile->append(sprintf("\$this->arrMeta = %s;\n", var_export($objExtract->getMeta(), true)));
 			$objFile->append(sprintf("\$this->arrFields = %s;\n", var_export($objExtract->getFields(), true)));
 			$objFile->append(sprintf("\$this->arrOrderFields = %s;\n", var_export($objExtract->getOrderFields(), true)));
+			$objFile->append(sprintf("\$this->arrUniqueFields = %s;\n", var_export($objExtract->getUniqueFields(), true)));
 			$objFile->append(sprintf("\$this->arrKeys = %s;\n", var_export($objExtract->getKeys(), true)));
 			$objFile->append(sprintf("\$this->arrRelations = %s;\n", var_export($objExtract->getRelations(), true)));
 
