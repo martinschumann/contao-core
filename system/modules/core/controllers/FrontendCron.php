@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -135,7 +135,6 @@ class FrontendCron extends \Frontend
 		// Add the cron entry
 		if ($objCron->numRows < 1)
 		{
-			$this->updateCronTxt($time);
 			$this->Database->query("INSERT INTO tl_cron (name, value) VALUES ('lastrun', $time)");
 			$return = false;
 		}
@@ -143,12 +142,18 @@ class FrontendCron extends \Frontend
 		// Check the last execution time
 		elseif ($objCron->value <= ($time - $this->getCronTimeout()))
 		{
-			$this->updateCronTxt($time);
 			$this->Database->query("UPDATE tl_cron SET value=$time WHERE name='lastrun'");
 			$return = false;
 		}
 
+		// Make sure the cron.txt file contains the correct time (see #8838)
+		else
+		{
+			$time = $objCron->value;
+		}
+
 		$this->Database->unlockTables();
+		$this->updateCronTxt($time);
 
 		return $return;
 	}

@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -313,10 +313,10 @@ class Environment
 	{
 		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && in_array($_SERVER['REMOTE_ADDR'], trimsplit(',', \Config::get('proxyServerIps'))))
 		{
-		    return $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https';
+		    return strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) == 'https';
 		}
 
-		return ($_SERVER['SSL_SESSION_ID'] || $_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1);
+		return ($_SERVER['SSL_SESSION_ID'] || strtolower($_SERVER['HTTPS']) == 'on' || $_SERVER['HTTPS'] == 1);
 	}
 
 

@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b0c99b37386ebd85c322fd7afaec56d8",
+    "content-hash": "e760b6809e7b44caf057b1343a20737d",
     "packages": [
         {
             "name": "contao-components/compass",
@@ -33,6 +33,48 @@
             ],
             "description": "Compass integration for Contao Open Source CMS",
             "time": "2016-07-07T11:45:34+00:00"
+        },
+        {
+            "name": "ircmaxell/password-compat",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ircmaxell/password_compat.git",
+                "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/5c5cde8822a69545767f7c7f3058cb15ff84614c",
+                "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/password.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthony Ferrara",
+                    "email": "ircmaxell@php.net",
+                    "homepage": "http://blog.ircmaxell.com"
+                }
+            ],
+            "description": "A compatibility library for the proposed simplified password hashing algorithm: https://wiki.php.net/rfc/password_hash",
+            "homepage": "https://github.com/ircmaxell/password_compat",
+            "keywords": [
+                "hashing",
+                "password"
+            ],
+            "time": "2014-11-20T16:49:30+00:00"
         },
         {
             "name": "leafo/scssphp",
@@ -89,16 +131,16 @@
         },
         {
             "name": "matthiasmullie/minify",
-            "version": "1.3.44",
+            "version": "1.3.61",
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthiasmullie/minify.git",
-                "reference": "a7fc4a98ef8f2cf38bba701b51f1a84a1d67bc5c"
+                "reference": "d5acb8ce5b6acb7d11bafe97cecc533f6e4fd751"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matthiasmullie/minify/zipball/a7fc4a98ef8f2cf38bba701b51f1a84a1d67bc5c",
-                "reference": "a7fc4a98ef8f2cf38bba701b51f1a84a1d67bc5c",
+                "url": "https://api.github.com/repos/matthiasmullie/minify/zipball/d5acb8ce5b6acb7d11bafe97cecc533f6e4fd751",
+                "reference": "d5acb8ce5b6acb7d11bafe97cecc533f6e4fd751",
                 "shasum": ""
             },
             "require": {
@@ -107,9 +149,12 @@
                 "php": ">=5.3.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "~1.0",
+                "friendsofphp/php-cs-fixer": "~2.0",
                 "matthiasmullie/scrapbook": "~1.0",
                 "phpunit/phpunit": "~4.8"
+            },
+            "suggest": {
+                "psr/cache-implementation": "Cache implementation to use with Minify::cache"
             },
             "bin": [
                 "bin/minifycss",
@@ -133,7 +178,7 @@
                     "role": "Developer"
                 }
             ],
-            "description": "CSS & JS minifier",
+            "description": "CSS & JavaScript minifier, in PHP. Removes whitespace, strips comments, combines files (incl. @import statements and small assets in CSS files), and optimizes/shortens a few common programming patterns.",
             "homepage": "http://www.minifier.org",
             "keywords": [
                 "JS",
@@ -142,20 +187,20 @@
                 "minifier",
                 "minify"
             ],
-            "time": "2017-03-16T16:42:50+00:00"
+            "time": "2018-11-26T23:10:39+00:00"
         },
         {
             "name": "matthiasmullie/path-converter",
-            "version": "1.1.0",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/matthiasmullie/path-converter.git",
-                "reference": "08551ec1b156e923c242a10ab484bd4d6ead6631"
+                "reference": "5e4b121c8b9f97c80835c1d878b0812ba1d607c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matthiasmullie/path-converter/zipball/08551ec1b156e923c242a10ab484bd4d6ead6631",
-                "reference": "08551ec1b156e923c242a10ab484bd4d6ead6631",
+                "url": "https://api.github.com/repos/matthiasmullie/path-converter/zipball/5e4b121c8b9f97c80835c1d878b0812ba1d607c9",
+                "reference": "5e4b121c8b9f97c80835c1d878b0812ba1d607c9",
                 "shasum": ""
             },
             "require": {
@@ -191,34 +236,29 @@
                 "paths",
                 "relative"
             ],
-            "time": "2017-01-26T08:54:49+00:00"
+            "time": "2018-10-25T15:19:41+00:00"
         },
         {
             "name": "michelf/php-markdown",
-            "version": "1.7.0",
+            "version": "1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/michelf/php-markdown.git",
-                "reference": "1f51cc520948f66cd2af8cbc45a5ee175e774220"
+                "reference": "01ab082b355bf188d907b9929cd99b2923053495"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/michelf/php-markdown/zipball/1f51cc520948f66cd2af8cbc45a5ee175e774220",
-                "reference": "1f51cc520948f66cd2af8cbc45a5ee175e774220",
+                "url": "https://api.github.com/repos/michelf/php-markdown/zipball/01ab082b355bf188d907b9929cd99b2923053495",
+                "reference": "01ab082b355bf188d907b9929cd99b2923053495",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-lib": "1.4.x-dev"
-                }
-            },
             "autoload": {
-                "psr-0": {
-                    "Michelf": ""
+                "psr-4": {
+                    "Michelf\\": "Michelf/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -242,7 +282,7 @@
             "keywords": [
                 "markdown"
             ],
-            "time": "2016-10-29T18:58:20+00:00"
+            "time": "2018-01-15T00:49:33+00:00"
         },
         {
             "name": "oyejorge/less.php",
@@ -346,25 +386,32 @@
         },
         {
             "name": "simplepie/simplepie",
-            "version": "1.5",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/simplepie/simplepie.git",
-                "reference": "5de5551953f95feef12cf355a7a26a70f94aa3ab"
+                "reference": "0e8fe72132dad765d25db4cabc69a91139af1263"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/5de5551953f95feef12cf355a7a26a70f94aa3ab",
-                "reference": "5de5551953f95feef12cf355a7a26a70f94aa3ab",
+                "url": "https://api.github.com/repos/simplepie/simplepie/zipball/0e8fe72132dad765d25db4cabc69a91139af1263",
+                "reference": "0e8fe72132dad765d25db4cabc69a91139af1263",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "ext-pcre": "*",
+                "ext-xml": "*",
+                "ext-xmlreader": "*",
+                "php": ">=5.6.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4 || ~5"
+                "phpunit/phpunit": "~5.4.3 || ~6.5"
             },
             "suggest": {
+                "ext-curl": "",
+                "ext-iconv": "",
+                "ext-intl": "",
+                "ext-mbstring": "",
                 "mf2/mf2": "Microformat module that allows for parsing HTML for microformats"
             },
             "type": "library",
@@ -402,20 +449,20 @@
                 "feeds",
                 "rss"
             ],
-            "time": "2017-04-17T07:29:31+00:00"
+            "time": "2018-08-02T05:43:58+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v5.4.7",
+            "version": "v5.4.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "56db4ed32a6d5c9824c3ecc1d2e538f663f47eb4"
+                "reference": "181b89f18a90f8925ef805f950d47a7190e9b950"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/56db4ed32a6d5c9824c3ecc1d2e538f663f47eb4",
-                "reference": "56db4ed32a6d5c9824c3ecc1d2e538f663f47eb4",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/181b89f18a90f8925ef805f950d47a7190e9b950",
+                "reference": "181b89f18a90f8925ef805f950d47a7190e9b950",
                 "shasum": ""
             },
             "require": {
@@ -450,26 +497,26 @@
                 }
             ],
             "description": "Swiftmailer, free feature-rich PHP mailer",
-            "homepage": "http://swiftmailer.org",
+            "homepage": "https://swiftmailer.symfony.com",
             "keywords": [
                 "email",
                 "mail",
                 "mailer"
             ],
-            "time": "2017-04-20T17:32:18+00:00"
+            "time": "2018-07-31T09:26:32+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.2.12",
+            "version": "6.2.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "2f732eaa91b5665274689b1d40b285a7bacdc37f"
+                "reference": "367241059ca166e3a76490f4448c284e0a161f15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/2f732eaa91b5665274689b1d40b285a7bacdc37f",
-                "reference": "2f732eaa91b5665274689b1d40b285a7bacdc37f",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/367241059ca166e3a76490f4448c284e0a161f15",
+                "reference": "367241059ca166e3a76490f4448c284e0a161f15",
                 "shasum": ""
             },
             "require": {
@@ -478,7 +525,6 @@
             "type": "library",
             "autoload": {
                 "classmap": [
-                    "fonts",
                     "config",
                     "include",
                     "tcpdf.php",
@@ -499,13 +545,13 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPLv3"
+                "LGPL-3.0"
             ],
             "authors": [
                 {
                     "name": "Nicola Asuni",
                     "email": "info@tecnick.com",
-                    "homepage": "http://nicolaasuni.tecnick.com"
+                    "role": "lead"
                 }
             ],
             "description": "TCPDF is a PHP class for generating PDF documents and barcodes.",
@@ -519,7 +565,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2015-09-12T10:08:34+00:00"
+            "time": "2018-10-16T17:24:05+00:00"
         },
         {
             "name": "true/punycode",
@@ -576,7 +622,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4.0"
+        "php": "^5.4 || ^7.0"
     },
     "platform-dev": []
 }

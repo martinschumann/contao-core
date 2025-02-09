@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -271,7 +271,7 @@ class PageSelector extends \Widget
 					break;
 				}
 
-				$objField = $this->Database->prepare("SELECT " . $this->strField . " FROM " . $this->strTable . " WHERE id=?")
+				$objField = $this->Database->prepare("SELECT " . \Database::quoteIdentifier($this->strField) . " FROM " . $this->strTable . " WHERE id=?")
 										   ->limit(1)
 										   ->execute($this->strId);
 

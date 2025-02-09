@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -233,7 +233,14 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			// Get root records from global configuration file
 			elseif (is_array($GLOBALS['TL_DCA'][$table]['list']['sorting']['root']))
 			{
-				$this->root = $this->eliminateNestedPages($GLOBALS['TL_DCA'][$table]['list']['sorting']['root'], $table, $this->Database->fieldExists('sorting', $table));
+				if ($GLOBALS['TL_DCA'][$table]['list']['sorting']['root'] == array(0))
+				{
+					$this->root = array(0);
+				}
+				else
+				{
+					$this->root = $this->eliminateNestedPages($GLOBALS['TL_DCA'][$table]['list']['sorting']['root'], $table, $this->Database->fieldExists('sorting', $table));
+				}
 			}
 		}
 
@@ -466,7 +473,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 
 				foreach ((array) $value as $v)
 				{
-					$objKey = $this->Database->prepare("SELECT " . $chunks[1] . " AS value FROM " . $chunks[0] . " WHERE id=?")
+					$objKey = $this->Database->prepare("SELECT " . \Database::quoteIdentifier($chunks[1]) . " AS value FROM " . $chunks[0] . " WHERE id=?")
 											 ->limit(1)
 											 ->execute($v);
 
@@ -562,7 +569,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			$return .= '
   <tr>
     <td'.$class.'><span class="tl_label">'.$label.': </span></td>
-    <td'.$class.'>'.$row[$i].'</td>
+    <td'.$class.'>'.specialchars($row[$i]).'</td>
   </tr>';
 		}
 
@@ -884,7 +891,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					// Empty unique fields or add a unique identifier in copyAll mode
 					elseif ($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['eval']['unique'])
 					{
-						$v = (\Input::get('act') == 'copyAll') ? $v .'-'. substr(md5(uniqid(mt_rand(), true)), 0, 8) : \Widget::getEmptyValueByFieldType($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['sql']);
+						$v = (\Input::get('act') == 'copyAll' && !$GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['eval']['doNotCopy']) ? $v .'-'. substr(md5(uniqid(mt_rand(), true)), 0, 8) : \Widget::getEmptyValueByFieldType($GLOBALS['TL_DCA'][$this->strTable]['fields'][$k]['sql']);
 					}
 
 					// Reset doNotCopy and fallback fields to their default value
@@ -2986,12 +2993,12 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			{
 				if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 4)
 				{
-					$this->Database->prepare("UPDATE " . $this->strTable . " SET " . $this->strField . "='' WHERE pid=?")
+					$this->Database->prepare("UPDATE " . $this->strTable . " SET " . \Database::quoteIdentifier($this->strField) . "='' WHERE pid=?")
 								   ->execute($this->activeRecord->pid);
 				}
 				else
 				{
-					$this->Database->execute("UPDATE " . $this->strTable . " SET " . $this->strField . "=''");
+					$this->Database->execute("UPDATE " . $this->strTable . " SET " . \Database::quoteIdentifier($this->strField) . "=''");
 				}
 			}
 
@@ -3004,7 +3011,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			$arrValues = $this->values;
 			array_unshift($arrValues, $varValue);
 
-			$objUpdateStmt = $this->Database->prepare("UPDATE " . $this->strTable . " SET " . $this->strField . "=? WHERE " . implode(' AND ', $this->procedure))
+			$objUpdateStmt = $this->Database->prepare("UPDATE " . $this->strTable . " SET " . \Database::quoteIdentifier($this->strField) . "=? WHERE " . implode(' AND ', $this->procedure))
 											->execute($arrValues);
 
 			if ($objUpdateStmt->affectedRows)
@@ -3349,12 +3356,12 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				{
 					list($t, $f) = explode('.', $GLOBALS['TL_DCA'][$this->strTable]['fields'][$fld]['foreignKey']);
 
-					$objRoot = $this->Database->prepare("SELECT $for FROM {$this->strTable} WHERE (" . sprintf($strPattern, $fld) . " OR " . sprintf($strPattern, "(SELECT $f FROM $t WHERE $t.id={$this->strTable}.$fld)") . ") GROUP BY $for")
+					$objRoot = $this->Database->prepare("SELECT $for FROM {$this->strTable} WHERE (" . sprintf($strPattern, \Database::quoteIdentifier($fld)) . " OR " . sprintf($strPattern, "(SELECT ".\Database::quoteIdentifier($f)." FROM $t WHERE $t.id={$this->strTable}.".\Database::quoteIdentifier($fld).")") . ") GROUP BY $for")
 											  ->execute($session['search'][$this->strTable]['value'], $session['search'][$this->strTable]['value']);
 				}
 				else
 				{
-					$objRoot = $this->Database->prepare("SELECT $for FROM {$this->strTable} WHERE " . sprintf($strPattern, $fld) . " GROUP BY $for")
+					$objRoot = $this->Database->prepare("SELECT $for FROM {$this->strTable} WHERE " . sprintf($strPattern, \Database::quoteIdentifier($fld)) . " GROUP BY $for")
 											  ->execute($session['search'][$this->strTable]['value']);
 				}
 			}
@@ -3424,7 +3431,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		$_buttons = '&nbsp;';
 
 		// Show paste button only if there are no root records specified
-		if (\Input::get('act') != 'select' && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && ((!count($GLOBALS['TL_DCA'][$table]['list']['sorting']['root']) && $GLOBALS['TL_DCA'][$table]['list']['sorting']['root'] !== false) || $GLOBALS['TL_DCA'][$table]['list']['sorting']['rootPaste']))
+		if (\Input::get('act') != 'select' && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && ((empty($GLOBALS['TL_DCA'][$table]['list']['sorting']['root']) && $GLOBALS['TL_DCA'][$table]['list']['sorting']['root'] !== false) || $GLOBALS['TL_DCA'][$table]['list']['sorting']['rootPaste']))
 		{
 			// Call paste_button_callback (&$dc, $row, $table, $cr, $childs, $previous, $next)
 			if (is_array($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['paste_button_callback']))
@@ -3692,7 +3699,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				list($strKey, $strTable) = explode(':', $v);
 				list($strTable, $strField) = explode('.', $strTable);
 
-				$objRef = $this->Database->prepare("SELECT " . $strField . " FROM " . $strTable . " WHERE id=?")
+				$objRef = $this->Database->prepare("SELECT " . \Database::quoteIdentifier($strField) . " FROM " . $strTable . " WHERE id=?")
 										 ->limit(1)
 										 ->execute($objRow->$strKey);
 
@@ -3989,7 +3996,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				{
 					$arrForeignKey = explode('.', $GLOBALS['TL_DCA'][$this->ptable]['fields'][$v]['foreignKey'], 2);
 
-					$objLabel = $this->Database->prepare("SELECT " . $arrForeignKey[1] . " AS value FROM " . $arrForeignKey[0] . " WHERE id=?")
+					$objLabel = $this->Database->prepare("SELECT " . \Database::quoteIdentifier($arrForeignKey[1]) . " AS value FROM " . $arrForeignKey[0] . " WHERE id=?")
 											   ->limit(1)
 											   ->execute($_v);
 
@@ -4095,7 +4102,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				if (isset($GLOBALS['TL_DCA'][$this->strTable]['fields'][$firstOrderBy]['foreignKey']))
 				{
 					$key = explode('.', $GLOBALS['TL_DCA'][$this->strTable]['fields'][$firstOrderBy]['foreignKey'], 2);
-					$query = "SELECT *, (SELECT ". $key[1] ." FROM ". $key[0] ." WHERE ". $this->strTable .".". $firstOrderBy ."=". $key[0] .".id) AS foreignKey FROM " . $this->strTable;
+					$query = "SELECT *, (SELECT ". \Database::quoteIdentifier($key[1]) ." FROM ". $key[0] ." WHERE ". $this->strTable .".". $firstOrderBy ."=". $key[0] .".id) AS foreignKey FROM " . $this->strTable;
 					$orderBy[0] = 'foreignKey';
 				}
 			}
@@ -4448,7 +4455,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				$firstOrderBy = 'pid';
 				$showFields = $GLOBALS['TL_DCA'][$table]['list']['label']['fields'];
 
-				$query .= " ORDER BY (SELECT " . $showFields[0] . " FROM " . $this->ptable . " WHERE " . $this->ptable . ".id=" . $this->strTable . ".pid), " . implode(', ', $orderBy);
+				$query .= " ORDER BY (SELECT " . \Database::quoteIdentifier($showFields[0]) . " FROM " . $this->ptable . " WHERE " . $this->ptable . ".id=" . $this->strTable . ".pid), " . implode(', ', $orderBy);
 
 				// Set the foreignKey so that the label is translated (also for backwards compatibility)
 				if ($GLOBALS['TL_DCA'][$table]['fields']['pid']['foreignKey'] == '')
@@ -4593,7 +4600,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 						list($strKey, $strTable) = explode(':', $v);
 						list($strTable, $strField) = explode('.', $strTable);
 
-						$objRef = $this->Database->prepare("SELECT " . $strField . " FROM " . $strTable . " WHERE id=?")
+						$objRef = $this->Database->prepare("SELECT " . \Database::quoteIdentifier($strField) . " FROM " . $strTable . " WHERE id=?")
 												 ->limit(1)
 												 ->execute($row[$strKey]);
 
@@ -4943,22 +4950,32 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		// Store search value in the current session
 		if (\Input::post('FORM_SUBMIT') == 'tl_filters')
 		{
-			$session['search'][$this->strTable]['value'] = '';
-			$session['search'][$this->strTable]['field'] = \Input::post('tl_field', true);
+			$strField = \Input::post('tl_field', true);
+			$strKeyword = ltrim(\Input::postRaw('tl_value'), '*');
+
+			if ($strField && !in_array($strField, $searchFields, true))
+			{
+				$strField = '';
+				$strKeyword = '';
+			}
 
 			// Make sure the regular expression is valid
-			if (\Input::postRaw('tl_value') != '')
+			if ($strField && $strKeyword)
 			{
 				try
 				{
-					$this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE " . \Input::post('tl_field', true) . " REGEXP ?")
+					$this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE " . \Database::quoteIdentifier($strField) . " REGEXP ?")
 								   ->limit(1)
-								   ->execute(\Input::postRaw('tl_value'));
-
-					$session['search'][$this->strTable]['value'] = \Input::postRaw('tl_value');
+								   ->execute($strKeyword);
 				}
-				catch (\Exception $e) {}
+				catch (\Exception $e)
+				{
+					$strKeyword = '';
+				}
 			}
+
+			$session['search'][$this->strTable]['field'] = $strField;
+			$session['search'][$this->strTable]['value'] = $strKeyword;
 
 			$this->Session->setData($session);
 		}
@@ -4978,12 +4995,12 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			if (isset($GLOBALS['TL_DCA'][$this->strTable]['fields'][$fld]['foreignKey']))
 			{
 				list($t, $f) = explode('.', $GLOBALS['TL_DCA'][$this->strTable]['fields'][$fld]['foreignKey']);
-				$this->procedure[] = "(" . sprintf($strPattern, $fld) . " OR " . sprintf($strPattern, "(SELECT $f FROM $t WHERE $t.id={$this->strTable}.$fld)") . ")";
+				$this->procedure[] = "(" . sprintf($strPattern, \Database::quoteIdentifier($fld)) . " OR " . sprintf($strPattern, "(SELECT ".\Database::quoteIdentifier($f)." FROM $t WHERE $t.id={$this->strTable}.".\Database::quoteIdentifier($fld).")") . ")";
 				$this->values[] = $session['search'][$this->strTable]['value'];
 			}
 			else
 			{
-				$this->procedure[] = sprintf($strPattern, $fld);
+				$this->procedure[] = sprintf($strPattern, \Database::quoteIdentifier($fld));
 			}
 
 			$this->values[] = $session['search'][$this->strTable]['value'];
@@ -5060,7 +5077,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 			$strSort = \Input::post('tl_sort');
 
 			// Validate the user input (thanks to aulmn) (see #4971)
-			if (in_array($strSort, $sortingFields))
+			if (in_array($strSort, $sortingFields, true))
 			{
 				$session['sorting'][$this->strTable] = in_array($GLOBALS['TL_DCA'][$this->strTable]['fields'][$strSort]['flag'], array(2, 4, 6, 8, 10, 12)) ? "$strSort DESC" : $strSort;
 				$this->Session->setData($session);
@@ -5434,6 +5451,14 @@ class DC_Table extends \DataContainer implements \listable, \editable
 				}
 			}
 
+			$table = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? $this->ptable : $this->strTable;
+
+			// Limit the options if there are root records
+			if (isset($GLOBALS['TL_DCA'][$table]['list']['sorting']['root']) && $GLOBALS['TL_DCA'][$table]['list']['sorting']['root'] !== false)
+			{
+				$arrProcedure[] = "id IN(" . implode(',', array_map('\intval', $GLOBALS['TL_DCA'][$table]['list']['sorting']['root'])) . ")";
+			}
+
 			$objFields = $this->Database->prepare("SELECT DISTINCT " . $what . " FROM " . $this->strTable . ((is_array($arrProcedure) && strlen($arrProcedure[0])) ? ' WHERE ' . implode(' AND ', $arrProcedure) : ''))
 										->execute($arrValues);
 
@@ -5582,7 +5607,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 					{
 						$key = explode('.', $GLOBALS['TL_DCA'][$this->strTable]['fields'][$field]['foreignKey'], 2);
 
-						$objParent = $this->Database->prepare("SELECT " . $key[1] . " AS value FROM " . $key[0] . " WHERE id=?")
+						$objParent = $this->Database->prepare("SELECT " . \Database::quoteIdentifier($key[1]) . " AS value FROM " . $key[0] . " WHERE id=?")
 													->limit(1)
 													->execute($vv);
 
@@ -5609,7 +5634,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 							$showFields[0] = 'id';
 						}
 
-						$objShowFields = $this->Database->prepare("SELECT " . $showFields[0] . " FROM ". $this->ptable . " WHERE id=?")
+						$objShowFields = $this->Database->prepare("SELECT " . \Database::quoteIdentifier($showFields[0]) . " FROM ". $this->ptable . " WHERE id=?")
 														->limit(1)
 														->execute($vv);
 
@@ -5733,7 +5758,7 @@ class DC_Table extends \DataContainer implements \listable, \editable
 		{
 			$key = explode('.', $GLOBALS['TL_DCA'][$this->strTable]['fields'][$field]['foreignKey'], 2);
 
-			$objParent = $this->Database->prepare("SELECT " . $key[1] . " AS value FROM " . $key[0] . " WHERE id=?")
+			$objParent = $this->Database->prepare("SELECT " . \Database::quoteIdentifier($key[1]) . " AS value FROM " . $key[0] . " WHERE id=?")
 										->limit(1)
 										->execute($value);
 

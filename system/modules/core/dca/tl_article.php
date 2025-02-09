@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 
@@ -146,15 +146,14 @@ $GLOBALS['TL_DCA']['tl_article'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array('protected', 'published'),
-		'default'                     => '{title_legend},title,alias,author;{layout_legend},inColumn,keywords;{teaser_legend:hide},teaserCssID,showTeaser,teaser;{syndication_legend},printable;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{publish_legend},published'
+		'__selector__'                => array('protected'),
+		'default'                     => '{title_legend},title,alias,author;{layout_legend},inColumn,keywords;{teaser_legend:hide},teaserCssID,showTeaser,teaser;{syndication_legend},printable;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{publish_legend},published,start,stop'
 	),
 
 	// Subpalettes
 	'subpalettes' => array
 	(
-		'protected'                   => 'groups',
-		'published'                   => 'start,stop'
+		'protected'                   => 'groups'
 	),
 
 	// Fields
@@ -326,7 +325,7 @@ $GLOBALS['TL_DCA']['tl_article'] = array
 			'exclude'                 => true,
 			'label'                   => &$GLOBALS['TL_LANG']['tl_article']['published'],
 			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true, 'doNotCopy'=>true),
+			'eval'                    => array('doNotCopy'=>true),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
 		'start' => array
@@ -384,7 +383,16 @@ class tl_article extends Backend
 		$GLOBALS['TL_DCA']['tl_page']['fields']['cgroup']['default'] = intval(Config::get('defaultGroup') ?: $this->User->groups[0]);
 
 		// Restrict the page tree
-		$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = $this->User->pagemounts;
+		if (empty($this->User->pagemounts) || !\is_array($this->User->pagemounts))
+		{
+			$root = array(0);
+		}
+		else
+		{
+			$root = $this->User->pagemounts;
+		}
+
+		$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = $root;
 
 		// Set allowed page IDs (edit multiple)
 		if (is_array($session['CURRENT']['IDS']))

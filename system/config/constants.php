@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 
@@ -13,7 +13,7 @@
  * Core version
  */
 define('VERSION', '3.5');
-define('BUILD', '28');
+define('BUILD', '40');
 define('LONG_TERM_SUPPORT', true);
 
 

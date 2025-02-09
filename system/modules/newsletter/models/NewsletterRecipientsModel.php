@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -94,5 +94,27 @@ class NewsletterRecipientsModel extends \Model
 		$t = static::$strTable;
 
 		return static::findBy(array("$t.email=? AND $t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")"), $strEmail, $arrOptions);
+	}
+
+
+	/**
+	 * Find old subscriptions by e-mail address and channels
+	 *
+	 * @param string $strEmail   The e-mail address
+	 * @param array  $arrPids    An array of newsletter channel IDs
+	 * @param array  $arrOptions An optional options array
+	 *
+	 * @return \Model\Collection|\NewsletterRecipientsModel[]|\NewsletterRecipientsModel|null A collection of models or null if there are no recipients
+	 */
+	public static function findOldSubscriptionsByEmailAndPids($strEmail, $arrPids, array $arrOptions=array())
+	{
+		if (empty($arrPids) || !is_array($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+
+		return static::findBy(array("$t.email=? AND $t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ") AND $t.active=''"), $strEmail, $arrOptions);
 	}
 }

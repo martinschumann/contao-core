@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -133,7 +133,7 @@ class Password extends \Widget
 			$this->blnSubmitInput = true;
 			\Message::addConfirmation($GLOBALS['TL_LANG']['MSC']['pw_changed']);
 
-			return \Encryption::hash($varInput);
+			return password_hash($varInput, PASSWORD_DEFAULT);
 		}
 
 		return '';

@@ -1,6 +1,132 @@
 Contao Open Source CMS changelog
 ================================
 
+Version 3.5.40 (2019-04-10)
+---------------------------
+
+### Fixed
+Fix the save callback in the back end password module (see #429).
+
+
+Version 3.5.39 (2019-04-09)
+---------------------------
+
+### Fixed
+Invalidate the user sessions if a password changes (see CVE-2019-10641).
+
+
+Version 3.5.38 (2018-12-21)
+---------------------------
+
+### Fixed
+Correctly check the permission to move child records as non-admin user.
+
+
+Version 3.5.37 (2018-12-13)
+---------------------------
+
+### Fixed
+Prevent information disclosure in the back end (see CVE-2018-20028).
+
+
+Version 3.5.36 (2018-09-18)
+---------------------------
+
+### Fixed
+Prevent arbitrary code execution through .phar files (see CVE-2018-17057).
+
+### Fixed
+Correctly reset the autologin data upon logout (#8868).
+
+### Fixed
+Remove support for deprecated user password hashes (see #8889).
+
+
+Version 3.5.35 (2018-04-18)
+---------------------------
+
+### Fixed
+Fix an XSS vulnerability in the system log (see CVE-2018-10125).
+
+
+Version 3.5.34 (2018-03-06)
+---------------------------
+
+### Fixed
+Check the registry for table prefixed queries (see contao/core-bundle#1161).
+
+### Fixed
+Improve the folder hashing performance (see #8856).
+
+### Fixed
+Reset the autologin hash if the username or password changes (see #8843).
+
+### Fixed
+Correctly encode the sitemap URLs (see #8849).
+
+
+Version 3.5.33 (2018-01-22)
+---------------------------
+
+### Fixed
+Also pass $this in the "customizeSearch" hook (see #8841).
+
+### Fixed
+Quote reserved words in database queries (see #8813).
+
+### Fixed
+Require ircmaxell/password-compat to remain compatible with PHP 5.4.
+
+
+Version 3.5.32 (2018-01-18)
+---------------------------
+
+### Fixed
+Fix an XSS vulnerability in the newsletter module (see CVE-2018-5478).
+
+### Fixed
+Do not remove old subscriptions not related to the channels (see #8824).
+
+### Fixed
+Backport the password algorithm changes from Contao 4 (see #8820).
+
+
+Version 3.5.31 (2017-11-15)
+---------------------------
+
+### Fixed
+Prevent SQL injections in the back end search panel (see CVE-2017-16558).
+
+
+Version 3.5.30 (2017-10-06)
+---------------------------
+
+### Fixed
+Filter multi-day events outside the scope in the event list (see #8792).
+
+### Fixed
+Correctly show multi-day events if the shortened view is disabled (see #8782).
+
+
+Version 3.5.29 (2017-09-27)
+---------------------------
+
+### Fixed
+Correctly handle unencoded data images in the Combiner (see #8788).
+
+### Fixed
+Do not add a suffix when copying if the "doNotCopy" flag is set (see #8610).
+
+### Fixed
+Use the module type as group header if sorted by type (see #8402).
+
+### Fixed
+Always show the "show from" and "show until" fields (see #8766).
+
+### Fixed
+Encode the username when opening the front end preview as a member (see #8762).
+
+
 Version 3.5.28 (2017-07-12)
 ---------------------------
 

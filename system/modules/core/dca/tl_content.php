@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 
@@ -886,11 +886,8 @@ class tl_content extends Backend
 		// Check the current action
 		switch (Input::get('act'))
 		{
-			case 'paste':
-				// Allow
-				break;
-
 			case '': // empty
+			case 'paste':
 			case 'create':
 			case 'select':
 				// Check access to the article

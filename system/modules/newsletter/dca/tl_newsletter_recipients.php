@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 
@@ -246,7 +246,11 @@ class tl_newsletter_recipients extends Backend
 		{
 			case 'paste':
 			case 'select':
-				// Allow
+				if (!in_array(CURRENT_ID, $root)) // check CURRENT_ID here (see #247)
+				{
+					$this->log('Not enough permissions to access newsletter channel ID "'.$id.'"', __METHOD__, TL_ERROR);
+					$this->redirect('contao/main.php?act=error');
+				}
 				break;
 
 			case 'create':

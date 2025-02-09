@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -14,9 +14,8 @@ namespace Contao;
 /**
  * Provide methods to manage front end users.
  *
- * @property array   $allGroups
- * @property string  $loginPage
- * @property boolean $blnRecordExists
+ * @property array  $allGroups
+ * @property string $loginPage
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
@@ -162,7 +161,7 @@ class FrontendUser extends \User
 		if (\Config::get('autologin') > 0 && ($strCookie = \Input::cookie('FE_AUTO_LOGIN')) != '')
 		{
 			// Try to find the user by his auto login cookie
-			if ($this->findBy('autologin', $strCookie) !== false)
+			if ($this->findBy('autologin', hash_hmac('sha256', $strCookie, \Config::get('encryptionKey'))) !== false)
 			{
 				// Check the auto login period
 				if ($this->createdOn >= (time() - \Config::get('autologin')))
@@ -217,7 +216,7 @@ class FrontendUser extends \User
 			$strToken = md5(uniqid(mt_rand(), true));
 
 			$this->createdOn = $time;
-			$this->autologin = $strToken;
+			$this->autologin = hash_hmac('sha256', $strToken, \Config::get('encryptionKey'));
 			$this->save();
 
 			$this->setCookie('FE_AUTO_LOGIN', $strToken, ($time + \Config::get('autologin')), null, null, false, true);
@@ -241,12 +240,9 @@ class FrontendUser extends \User
 		}
 
 		// Reset the auto login data
-		if ($this->blnRecordExists)
-		{
-			$this->autologin = null;
-			$this->createdOn = 0;
-			$this->save();
-		}
+		$this->autologin = null;
+		$this->createdOn = 0;
+		$this->save();
 
 		// Remove the auto login cookie
 		$this->setCookie('FE_AUTO_LOGIN', $this->autologin, (time() - 86400), null, null, false, true);

@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -83,6 +83,10 @@ class TextArea extends \Widget
 					unset($this->arrAttributes['required']);
 				}
 				parent::__set($strKey, $varValue);
+				break;
+
+			case 'placeholder':
+				$this->arrAttributes['placeholder'] = $varValue;
 				break;
 
 			case 'rows':

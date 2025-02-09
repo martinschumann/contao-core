@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao\Model;
@@ -53,10 +53,10 @@ class QueryBuilder
 
 						foreach (array_keys($objRelated->getFields()) as $strField)
 						{
-							$arrFields[] = 'j' . $intCount . '.' . $strField . ' AS ' . $strKey . '__' . $strField;
+							$arrFields[] = 'j' . $intCount . '.' . \Database::quoteIdentifier($strField) . ' AS ' . $strKey . '__' . $strField;
 						}
 
-						$arrJoins[] = " LEFT JOIN " . $arrConfig['table'] . " j$intCount ON " . $arrOptions['table'] . "." . $strKey . "=j$intCount." . $arrConfig['field'];
+						$arrJoins[] = " LEFT JOIN " . $arrConfig['table'] . " j$intCount ON " . $arrOptions['table'] . "." . \Database::quoteIdentifier($strKey) . "=j$intCount." . $arrConfig['field'];
 					}
 				}
 			}
@@ -68,7 +68,7 @@ class QueryBuilder
 		// Where condition
 		if ($arrOptions['column'] !== null)
 		{
-			$strQuery .= " WHERE " . (is_array($arrOptions['column']) ? implode(" AND ", $arrOptions['column']) : $arrOptions['table'] . '.' . $arrOptions['column'] . "=?");
+			$strQuery .= " WHERE " . (is_array($arrOptions['column']) ? implode(" AND ", $arrOptions['column']) : $arrOptions['table'] . '.' . \Database::quoteIdentifier($arrOptions['column']) . "=?");
 		}
 
 		// Group by
@@ -106,7 +106,7 @@ class QueryBuilder
 
 		if ($arrOptions['column'] !== null)
 		{
-			$strQuery .= " WHERE " . (is_array($arrOptions['column']) ? implode(" AND ", $arrOptions['column']) : $arrOptions['table'] . '.' . $arrOptions['column'] . "=?");
+			$strQuery .= " WHERE " . (is_array($arrOptions['column']) ? implode(" AND ", $arrOptions['column']) : $arrOptions['table'] . '.' . \Database::quoteIdentifier($arrOptions['column']) . "=?");
 		}
 
 		return $strQuery;

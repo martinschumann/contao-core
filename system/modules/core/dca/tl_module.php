@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 
@@ -45,6 +45,10 @@ $GLOBALS['TL_DCA']['tl_module'] = array
 			'headerFields'            => array('name', 'author', 'tstamp'),
 			'child_record_callback'   => array('tl_module', 'listModule'),
 			'child_record_class'      => 'no_padding'
+		),
+		'label' => array
+		(
+			'group_callback'          => array('tl_module', 'getGroupHeader')
 		),
 		'global_operations' => array
 		(
@@ -956,6 +960,27 @@ class tl_module extends Backend
 	public function getRssTemplates()
 	{
 		return $this->getTemplateGroup('rss_');
+	}
+
+
+	/**
+	 * Use the module type as group header if sorted by type (see #8402)
+	 *
+	 * @param string $group
+	 * @param string $mode
+	 * @param string $field
+	 * @param array  $row
+	 *
+	 * @return string
+	 */
+	public function getGroupHeader($group, $mode, $field, $row)
+	{
+		if ($field == 'type')
+		{
+			return $row['type'];
+		}
+
+		return $group;
 	}
 
 

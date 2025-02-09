@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 
@@ -139,8 +139,8 @@ $GLOBALS['TL_DCA']['tl_news'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array('addImage', 'addEnclosure', 'source', 'published'),
-		'default'                     => '{title_legend},headline,alias,author;{date_legend},date,time;{teaser_legend},subheadline,teaser;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published'
+		'__selector__'                => array('addImage', 'addEnclosure', 'source'),
+		'default'                     => '{title_legend},headline,alias,author;{date_legend},date,time;{teaser_legend},subheadline,teaser;{image_legend},addImage;{enclosure_legend:hide},addEnclosure;{source_legend:hide},source;{expert_legend:hide},cssClass,noComments,featured;{publish_legend},published,start,stop'
 	),
 
 	// Subpalettes
@@ -150,8 +150,7 @@ $GLOBALS['TL_DCA']['tl_news'] = array
 		'addEnclosure'                => 'enclosure',
 		'source_internal'             => 'jumpTo',
 		'source_article'              => 'articleId',
-		'source_external'             => 'url,target',
-		'published'                   => 'start,stop'
+		'source_external'             => 'url,target'
 	),
 
 	// Fields
@@ -188,7 +187,7 @@ $GLOBALS['TL_DCA']['tl_news'] = array
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'alias', 'unique'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
+			'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'unique'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
 			'save_callback' => array
 			(
 				array('tl_news', 'generateAlias')
@@ -434,7 +433,7 @@ $GLOBALS['TL_DCA']['tl_news'] = array
 			'filter'                  => true,
 			'flag'                    => 1,
 			'inputType'               => 'checkbox',
-			'eval'                    => array('submitOnChange'=>true, 'doNotCopy'=>true),
+			'eval'                    => array('doNotCopy'=>true),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
 		'start' => array
@@ -508,7 +507,12 @@ class tl_news extends Backend
 		switch (Input::get('act'))
 		{
 			case 'paste':
-				// Allow
+			case 'select':
+				if (!in_array(CURRENT_ID, $root)) // check CURRENT_ID here (see #247)
+				{
+					$this->log('Not enough permissions to access news archive ID "'.$id.'"', __METHOD__, TL_ERROR);
+					$this->redirect('contao/main.php?act=error');
+				}
 				break;
 
 			case 'create':
@@ -550,7 +554,6 @@ class tl_news extends Backend
 				}
 				break;
 
-			case 'select':
 			case 'editAll':
 			case 'deleteAll':
 			case 'overrideAll':

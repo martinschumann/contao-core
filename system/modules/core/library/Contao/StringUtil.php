@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -605,13 +605,13 @@ class StringUtil
 			$blnCurrent = $arrStack[count($arrStack) - 1];
 			$blnCurrentIf = $arrIfStack[count($arrIfStack) - 1];
 
-			if (strncmp($strTag, '{if', 3) === 0)
+			if (strncmp($strTag, '{if ', 4) === 0)
 			{
 				$blnExpression = $evaluateExpression(substr($strTag, 4, -1));
 				$arrStack[] = $blnCurrent && $blnExpression;
 				$arrIfStack[] = $blnExpression;
 			}
-			elseif (strncmp($strTag, '{elseif', 7) === 0)
+			elseif (strncmp($strTag, '{elseif ', 8) === 0)
 			{
 				$blnExpression = $evaluateExpression(substr($strTag, 8, -1));
 				array_pop($arrStack);

@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -163,6 +163,13 @@ class ModuleEventlist extends \Events
 		{
 			foreach ($days as $day=>$events)
 			{
+				// Skip events before the start day if the "shortened view" option is not set.
+				// Events after the end day are filtered in the Events::addEvent() method (see #8782).
+				if (!$this->cal_noSpan && $day < $intStart)
+				{
+					continue;
+				}
+
 				foreach ($events as $event)
 				{
 					// Use repeatEnd if > 0 (see #8447)

@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao\Database;
@@ -95,9 +95,11 @@ class Mysql extends \Database
 	 */
 	protected function find_in_set($strKey, $varSet, $blnIsField=false)
 	{
+		$strKey = static::quoteIdentifier($strKey);
+
 		if ($blnIsField)
 		{
-			return "FIND_IN_SET(" . $strKey . ", " . $varSet . ")";
+			return "FIND_IN_SET(" . $strKey . ", " . static::quoteIdentifier($varSet) . ")";
 		}
 		else
 		{

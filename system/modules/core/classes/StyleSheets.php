@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -932,7 +932,7 @@ class StyleSheets extends \Backend
 			$own = preg_replace('/url\("(?!data:|\/)/', 'url("' . $strGlue, $own);
 			$own = preg_split('/[\n\r]+/', $own);
 			$own = implode(($blnWriteToFile ? '' : $lb), $own);
-			$return .= $lb . (!$blnWriteToFile ? specialchars($own) : $own);
+			$return .= $lb . ((!$blnWriteToFile && !$export) ? specialchars($own) : $own);
 		}
 
 		// Allow custom definitions

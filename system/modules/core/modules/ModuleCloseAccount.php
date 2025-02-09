@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -82,24 +82,10 @@ class ModuleCloseAccount extends \Module
 			$objWidget->validate();
 
 			// Validate the password
-			if (!$objWidget->hasErrors())
+			if (!$objWidget->hasErrors() && !password_verify($objWidget->value, $this->User->password))
 			{
-				// The password has been generated with crypt()
-				if (\Encryption::test($this->User->password))
-				{
-					$blnAuthenticated = \Encryption::verify($objWidget->value, $this->User->password);
-				}
-				else
-				{
-					list($strPassword, $strSalt) = explode(':', $this->User->password);
-					$blnAuthenticated = ($strSalt == '') ? ($strPassword === sha1($objWidget->value)) : ($strPassword === sha1($strSalt . $objWidget->value));
-				}
-
-				if (!$blnAuthenticated)
-				{
-					$objWidget->value = '';
-					$objWidget->addError($GLOBALS['TL_LANG']['ERR']['invalidPass']);
-				}
+				$objWidget->value = '';
+				$objWidget->addError($GLOBALS['TL_LANG']['ERR']['invalidPass']);
 			}
 
 			// Close account

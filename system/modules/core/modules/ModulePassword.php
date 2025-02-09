@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -253,6 +253,10 @@ class ModulePassword extends \Module
 						$this->{$callback[0]}->{$callback[1]}($objMember, $objWidget->value, $this);
 					}
 				}
+
+				// Invalidate the user sessions if the password changes
+				$this->Database->prepare("DELETE FROM tl_session WHERE name='FE_USER_AUTH' AND pid=? AND sessionID!=?")
+							   ->execute($objMember->id, session_id());
 
 				// Redirect to the jumpTo page
 				if (($objTarget = $this->objModel->getRelated('reg_jumpTo')) !== null)

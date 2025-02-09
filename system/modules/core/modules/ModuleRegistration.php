@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -209,7 +209,7 @@ class ModuleRegistration extends \Module
 				$varValue = $objWidget->value;
 
 				// Check whether the password matches the username
-				if ($objWidget instanceof \FormPassword && \Encryption::verify(\Input::post('username'), $varValue))
+				if ($objWidget instanceof \FormPassword && password_verify(\Input::post('username'), $varValue))
 				{
 					$objWidget->addError($GLOBALS['TL_LANG']['ERR']['passwordName']);
 				}

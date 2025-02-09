@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -378,21 +378,13 @@ abstract class User extends \System
 			return false;
 		}
 
-		// The password has been generated with crypt()
-		if (\Encryption::test($this->password))
-		{
-			$blnAuthenticated = \Encryption::verify(\Input::postUnsafeRaw('password'), $this->password);
-		}
-		else
-		{
-			list($strPassword, $strSalt) = explode(':', $this->password);
-			$blnAuthenticated = ($strSalt == '') ? ($strPassword === sha1(\Input::postUnsafeRaw('password'))) : ($strPassword === sha1($strSalt . \Input::postUnsafeRaw('password')));
+		$blnAuthenticated = password_verify(\Input::postUnsafeRaw('password'), $this->password);
+		$blnNeedsRehash = password_needs_rehash($this->password, PASSWORD_DEFAULT);
 
-			// Store a SHA-512 encrpyted version of the password
-			if ($blnAuthenticated)
-			{
-				$this->password = \Encryption::hash(\Input::postUnsafeRaw('password'));
-			}
+		// Re-hash the password if the algorithm has changed
+		if ($blnAuthenticated && $blnNeedsRehash)
+		{
+			$this->password = password_hash(\Input::postUnsafeRaw('password'), PASSWORD_DEFAULT);
 		}
 
 		// HOOK: pass credentials to callback functions
@@ -522,7 +514,7 @@ abstract class User extends \System
 	 */
 	public function findBy($strColumn, $varValue)
 	{
-		$objResult = $this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE " . $strColumn . "=?")
+		$objResult = $this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE " . \Database::quoteIdentifier($strColumn) . "=?")
 									->limit(1)
 									->execute($varValue);
 

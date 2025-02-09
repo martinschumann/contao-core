@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -470,7 +470,7 @@ abstract class Model
 			}
 
 			// Update the row
-			$objDatabase->prepare("UPDATE " . static::$strTable . " %s WHERE " . static::$strPk . "=?")
+			$objDatabase->prepare("UPDATE " . static::$strTable . " %s WHERE " . \Database::quoteIdentifier(static::$strPk) . "=?")
 						->set($arrSet)
 						->execute($intPk);
 
@@ -563,7 +563,7 @@ abstract class Model
 		}
 
 		// Delete the row
-		$intAffected = \Database::getInstance()->prepare("DELETE FROM " . static::$strTable . " WHERE " . static::$strPk . "=?")
+		$intAffected = \Database::getInstance()->prepare("DELETE FROM " . static::$strTable . " WHERE " . \Database::quoteIdentifier(static::$strPk) . "=?")
 											   ->execute($intPk)
 											   ->affectedRows;
 
@@ -624,10 +624,10 @@ abstract class Model
 		elseif ($arrRelation['type'] == 'hasMany' || $arrRelation['type'] == 'belongsToMany')
 		{
 			$arrValues = deserialize($this->$strKey, true);
-			$strField = $arrRelation['table'] . '.' . $arrRelation['field'];
+			$strField = $arrRelation['table'] . '.' . \Database::quoteIdentifier($arrRelation['field']);
 
 			// Handle UUIDs (see #6525)
-			if ($strField == 'tl_files.uuid')
+			if ($arrRelation['table'] == 'tl_files' && $arrRelation['field'] == 'uuid')
 			{
 				/** @var \FilesModel $strClass */
 				$objModel = $strClass::findMultipleByUuids($arrValues, $arrOptions);
@@ -668,7 +668,7 @@ abstract class Model
 		}
 
 		// Reload the database record
-		$res = \Database::getInstance()->prepare("SELECT * FROM " . static::$strTable . " WHERE " . static::$strPk . "=?")
+		$res = \Database::getInstance()->prepare("SELECT * FROM " . static::$strTable . " WHERE " . \Database::quoteIdentifier(static::$strPk) . "=?")
 									   ->execute($intPk);
 
 		$this->setRow($res->row());
@@ -1052,14 +1052,20 @@ abstract class Model
 		{
 			$arrColumn = (array) $arrOptions['column'];
 
-			if (count($arrColumn) == 1 && ($arrColumn[0] == static::$strPk || in_array($arrColumn[0], static::getUniqueFields())))
+			if (\count($arrColumn) == 1)
 			{
-				$varKey = is_array($arrOptions['value']) ? $arrOptions['value'][0] : $arrOptions['value'];
-				$objModel = \Model\Registry::getInstance()->fetch(static::$strTable, $varKey, $arrColumn[0]);
+				// Support table prefixes
+				$arrColumn[0] = preg_replace('/^' . preg_quote(static::getTable(), '/') . '\./', '', $arrColumn[0]);
 
-				if ($objModel !== null)
+				if ($arrColumn[0] == static::$strPk || \in_array($arrColumn[0], static::getUniqueFields()))
 				{
-					return $objModel;
+					$varKey = \is_array($arrOptions['value']) ? $arrOptions['value'][0] : $arrOptions['value'];
+					$objModel = \Model\Registry::getInstance()->fetch(static::$strTable, $varKey, $arrColumn[0]);
+
+					if ($objModel !== null)
+					{
+						return $objModel;
+					}
 				}
 			}
 		}

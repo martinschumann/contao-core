@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 
@@ -466,11 +466,15 @@ class tl_form_field extends Backend
 		switch (Input::get('act'))
 		{
 			case 'paste':
-				// Allow
+			case 'select':
+				if (!in_array(CURRENT_ID, $root)) // check CURRENT_ID here (see #247)
+				{
+					$this->log('Not enough permissions to access form ID "'.$id.'"', __METHOD__, TL_ERROR);
+					$this->redirect('contao/main.php?act=error');
+				}
 				break;
 
 			case 'create':
-			case 'select':
 				if (!strlen(Input::get('id')) || !in_array(Input::get('id'), $root))
 				{
 					$this->log('Not enough permissions to access form ID "'.Input::get('id').'"', __METHOD__, TL_ERROR);

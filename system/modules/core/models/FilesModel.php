@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -174,6 +174,18 @@ class FilesModel extends \Model
 		if (\Validator::isStringUuid($strUuid))
 		{
 			$strUuid = \StringUtil::uuidToBin($strUuid);
+		}
+
+		// Check the model registry (does not work by default due to UNHEX())
+		if (empty($arrOptions))
+		{
+			/** @var \FilesModel $objModel */
+			$objModel = \Model\Registry::getInstance()->fetch(static::$strTable, $strUuid, 'uuid');
+
+			if ($objModel !== null)
+			{
+				return $objModel;
+			}
 		}
 
 		return static::findOneBy(array("$t.uuid=UNHEX(?)"), bin2hex($strUuid), $arrOptions);

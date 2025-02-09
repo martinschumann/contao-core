@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 
@@ -145,7 +145,7 @@ $GLOBALS['TL_DCA']['tl_newsletter'] = array
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'alias', 'unique'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
+			'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'unique'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
 			'save_callback' => array
 			(
 				array('tl_newsletter', 'generateAlias')
@@ -310,7 +310,11 @@ class tl_newsletter extends Backend
 		{
 			case 'paste':
 			case 'select':
-				// Allow
+				if (!in_array(CURRENT_ID, $root)) // check CURRENT_ID here (see #247)
+				{
+					$this->log('Not enough permissions to access newsletter channel ID "'.$id.'"', __METHOD__, TL_ERROR);
+					$this->redirect('contao/main.php?act=error');
+				}
 				break;
 
 			case 'create':

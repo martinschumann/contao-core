@@ -1,11 +1,11 @@
 <?php
 
-/**
- * Contao Open Source CMS
+/*
+ * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * (c) Leo Feyer
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Contao;
@@ -241,7 +241,7 @@ class ModuleSubscribe extends \Module
 		}
 
 		// Remove old subscriptions that have not been activated yet
-		if (($objOld = \NewsletterRecipientsModel::findBy(array("email=? AND active=''"), $varInput)) !== null)
+		if (($objOld = \NewsletterRecipientsModel::findOldSubscriptionsByEmailAndPids($varInput, $arrNew)) !== null)
 		{
 			while ($objOld->next())
 			{
